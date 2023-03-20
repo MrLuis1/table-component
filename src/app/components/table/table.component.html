@@ -1,0 +1,36 @@
+<section class="table-component">
+
+  <div class="search">
+    <button (click)="showOptions()">Filter</button>
+
+    <div class="dropdown" #dropdown>
+      <ul>
+        <li *ngFor="let column of columns">
+          <input type="checkbox" [id]="column.name">
+          <label [for]="column.name">{{column.title}}</label> 
+        </li>
+      </ul>
+    </div>
+
+    <input type="text" class="search-input" (keyup.enter)="filterTable($event)" (keyup.backspace)="filterTable($event)">
+  </div>
+
+  <div class="table-container">
+    <table id="dataTable" #table>
+      <thead>
+        <th *ngFor="let column of columns" class="table-header-item">{{column.title}}</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dato of datos" >
+          <td *ngFor="let column of columns">{{dato[column.name]}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination-container">
+      <button [disabled]="page === 1" >&#x2039;</button>
+      <div class="page">{{page}}</div>
+      <button>&#x203A;</button>
+    </div>
+  </div>
+</section>
