@@ -1,36 +1,56 @@
 <section class="table-component">
 
+  <!-- Section header -->
   <div class="search">
-    <button (click)="showOptions()">Filter</button>
+    <button (click)="showOptions()">
+      <img src="../../../assets/images/filter.png" alt="filtrar" class="image-btn">
+    </button>
 
     <div class="dropdown" #dropdown>
       <ul>
         <li *ngFor="let column of columns">
-          <input type="checkbox" [id]="column.name">
+          <input type="checkbox" [id]="column.name" (click)="hideColumns($event)">
           <label [for]="column.name">{{column.title}}</label> 
         </li>
       </ul>
     </div>
 
     <input type="text" class="search-input" (keyup.enter)="filterTable($event)" (keyup.backspace)="filterTable($event)">
+
+    <div>
+      <button (click)="downloadData()">
+        <img src="../../../assets/images/download.png" alt="download" class="image-btn">
+      </button>
+    </div>
   </div>
 
+  <!-- Table -->
   <div class="table-container">
     <table id="dataTable" #table>
-      <thead>
-        <th *ngFor="let column of columns" class="table-header-item">{{column.title}}</th>
+      <thead #tHeader>
+        <tr>
+          <th *ngFor="let column of columns; let i = index" class="table-header-item" [id]="column.name" (click)="sortTable(i)">{{column.title}}</th>
+        </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let dato of datos" >
-          <td *ngFor="let column of columns">{{dato[column.name]}}</td>
+      <tbody #tBody>
+        <tr *ngFor="let dato of datos">
+          <td *ngFor="let column of columns" [class]="column.name">{{dato[column.name]}}</td>
         </tr>
       </tbody>
     </table>
 
+    <!-- table footer -->
     <div class="pagination-container">
-      <button [disabled]="page === 1" >&#x2039;</button>
-      <div class="page">{{page}}</div>
-      <button>&#x203A;</button>
+      <select [(ngModel)]="totalReg" (change)="modifyTotalReg()" class="select">
+        <option [value]="10">10</option>
+        <option [value]="15">15</option>
+        <option [value]="20">20</option>
+      </select>
+
+
+      <button [disabled]="firstPage" (click)="prev()">&#x2039;</button>
+      <div class="page">{{pageIndex}}</div>
+      <button (click)="next()">&#x203A;</button>
     </div>
   </div>
 </section>

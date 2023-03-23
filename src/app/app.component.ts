@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ObserverTableEvents } from './interfaces/table.interface';
+import { ObservableComponentsService } from './services/observable-components.service';
 
 const ELEMENT_DATA = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
@@ -22,7 +24,16 @@ export class AppComponent implements OnInit {
   title = 'table';
   json: any;
 
+  constructor( private obs : ObservableComponentsService ) {}
+
   ngOnInit(): void {
+    // ! El objeto que se debe pasar al componente debe ser estar estructurado de esta manera
+    // ! La propiedad config es la que se usara para crear los "th" de la tabla y para vincular las celdas por medio de ID}
+    // ! Cada elemento del array config debe contener la propiedad title usada para el innerText de la "th" y el name para usarlo como id y class
+    // ! En la propiedad data se colocaria la data en si que se desea generar la tabla
+
+    // ! Esta data debe ser pasada al componente por medio de un @Input
+
     this.json = {
       config: [
         {title: 'Position', name: 'position'},
@@ -31,7 +42,32 @@ export class AppComponent implements OnInit {
         {title: 'Symbol', name: 'symbol'},
       ],
       data: ELEMENT_DATA,
-      displayedColumns: ['position', 'name', 'weight', 'symbol']
+
     }
+
+    // ! Cada vez que se presione un de los botones (next, prev o el select para modificar la cantidad de registros) se va a obtener el valor del observable
+    // ! En funcion al boton seleccionado se ejecuta una suscripcion especifica, dentro de la suscripcion se llamara la petición que proporciona la data para la tabla
+
+    this.obs.nextObj.subscribe((res: ObserverTableEvents) => {
+      this.peticion(res.page, res.totalReg)
+    })
+
+    this.obs.prevObj.subscribe((res: ObserverTableEvents) => {
+      this.peticion(res.page, res.totalReg)
+    })
+
+    this.obs.modifyTotalReg.subscribe((res: ObserverTableEvents) => {
+      this.peticion(res.page, res.totalReg)
+    })
+  }
+
+
+  // ! Se debe crear el metodo en el cual se realizaria la petición a la API
+  // ! Este metodo recibe dos parametros pagina y cantidad de registros a solicitar
+  // ! Usar esos dos parametros para pasarlos a la petición
+
+  peticion(page: any, cant: any) {
+    console.log(page);
+    console.log(cant);
   }
 }
